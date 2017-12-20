@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="utf-8"/>
+        <title>Holiday Calendar</title>
+    </head>
+<body>
+    <h1>Holiday entries</h1>
+    <div id="entries">   
+    </div>
+    
+    <form>
+        <label for="dateStart">Start Date:</label>
+        <input type="date" id="dateStart">
+        <label for="dateEnd">End Date:</label>
+        <input type="date" id="dateEnd">
+        <label for="reason">Holiday:</label>
+        <input type="text" id="reason">
+        <button id="submitButton">Submit</button>
+    </form>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        let API_URL='YOUR API URL';
+    $(document).ready(function(){
+        $.ajax({
+            type:'GET',
+            url:API_URL,    
+            success: function(data){
+                $('#entries').html('');      
+                data.Items.forEach(function(dbEntry){                                  
+                $('#entries').append('<p>'+ new Date(dbEntry.dateStart) + " - " + new Date(dbEntry.dateEnd)+ " | "+dbEntry.reason+'</p>');               
+                                   })
+            }
+        })
+        
+    });
+    
+        $('#submitButton').on('click', function(){
+            $.ajax({
+            type:'POST',
+            url:API_URL,
+            data: JSON.stringify({"dateStart": new Date($('#dateStart').val()).getTime(), "dateEnd": new Date($('#dateEnd').val()).getTime(),"reason": $('#reason').val()}),
+            contentType: "application/json",
+            success: function(data){
+                     location.reload();
+            }
+        });
+            return false;  
+        });
+    
+    </script>  
+</body>
+</html>
